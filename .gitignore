@@ -1,0 +1,4 @@
+bin
+lib
+pyvenv.cfg
+src/VendorProduct/__pycache__
