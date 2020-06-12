@@ -1,4 +1,6 @@
 bin
 lib
 pyvenv.cfg
-src/VendorProduct/__pycache__
+
+# cache folders
+src/**/__pycache__
