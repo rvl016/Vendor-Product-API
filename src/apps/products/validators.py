@@ -1,11 +1,11 @@
-from helpers.validatorsMsg import *
+from helpers.validators_msg import *
 
 # name validation
 NAME_MAX_LEN = 50
-NAME_MAX_LEN_MSG = maxLenMsg( NAME_MAX_LEN)
+NAME_MAX_LEN_MSG = max_len_msg( NAME_MAX_LEN)
 
 NAME_MIN_LEN = 3
-NAME_MIN_LEN_MSG = minLenMsg( NAME_MIN_LEN)
+NAME_MIN_LEN_MSG = min_len_msg( NAME_MIN_LEN)
 
 NAME_NULL_CHAR_MSG = NULL_CHAR_MSG
 
