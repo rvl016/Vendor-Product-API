@@ -33,11 +33,11 @@ ___
 
 ___
 
-<b>GET</b> on `/api/prducts/<product_id>`<br/>
+<b>GET</b> on `/api/products/<product_id>`<br/>
 
-<b>PUT</b> on `/api/prducts/<product_id>`<br/>
+<b>PUT</b> on `/api/products/<product_id>`<br/>
 
-<b>DELETE</b> on `/api/prducts/<product_id>`<br/>
+<b>DELETE</b> on `/api/products/<product_id>`<br/>
 
 
 <h2>How to view, register and delete vendors</h2>
