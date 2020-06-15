@@ -1,6 +1,8 @@
 from django.db import models
+
 from django.core.validators import *
 from helpers.models_validations import BasicValidator
+
 from .validators import *
  
 # Create your models here.
@@ -34,6 +36,9 @@ class Vendor( models.Model, BasicValidator) :
     )  
 
     fields = {'name', 'cnpj', 'city'}
+
+    def __str__( self) :
+        return self.name
 
     @classmethod
     def get_all( cls) :

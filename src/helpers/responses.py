@@ -3,10 +3,16 @@ from django.http import JsonResponse
 class Responses :
 
     @staticmethod
-    def _reply_not_found() :
+    def _reply_no_content() :
         return JsonResponse( {
             'error': "The requested content does not exist."
         }, status = 204)
+
+    @staticmethod
+    def _reply_not_found() :
+        return JsonResponse( {
+            'error': "The requested content does not exist."
+        }, status = 404)
 
     @staticmethod
     def _reply_created_or_failed( errors) :

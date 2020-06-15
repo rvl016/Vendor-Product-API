@@ -84,12 +84,12 @@ class VendoDetailsAPITestCase( APITestCase) :
             cnpj = "26.407.093/0401-74", city = "Jaú")
 
     def test_invalid_get( self) :
-        response = self.client.get( reverse( "vendors-detail", 
+        response = self.client.get( reverse( "vendor-details", 
             args = ( 99999999999999999999, )))
-        self.assertEqual( response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual( response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_valid_get( self) :
-        response = self.client.get( reverse( "vendors-detail", 
+        response = self.client.get( reverse( "vendor-details", 
             args = ( self.vendor1.id, )))
         expected = Vendor.objects.get( id = self.vendor1.id)
         serialized = VendorSerializer( expected)
@@ -97,7 +97,7 @@ class VendoDetailsAPITestCase( APITestCase) :
         self.assertEqual( response.status_code, status.HTTP_200_OK)
 
     def test_put_bad_requests( self) :
-        response = self.client.put( reverse( "vendors-detail", 
+        response = self.client.put( reverse( "vendor-details", 
             args = ( self.vendor1.id, )), {
             'vendor': {
                 'nami': "Mai nami",
@@ -107,7 +107,7 @@ class VendoDetailsAPITestCase( APITestCase) :
         self.assertEqual( response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_put_invalid( self) :
-        response = self.client.put( reverse( "vendors-detail", 
+        response = self.client.put( reverse( "vendor-details", 
             args = ( self.vendor1.id, )), {
             'vendor': {
                 'cnpj': "894892395"
@@ -117,7 +117,7 @@ class VendoDetailsAPITestCase( APITestCase) :
 
     def test_put_valid( self) :
         id = self.vendor1.id
-        response = self.client.put( reverse( "vendors-detail", 
+        response = self.client.put( reverse( "vendor-details", 
             args = ( id, )), {
             'vendor': {
                 'name': "New name",
@@ -133,9 +133,9 @@ class VendoDetailsAPITestCase( APITestCase) :
 
     def test_correct_delete( self) :        
         id = self.vendor1.id
-        response = self.client.delete( reverse( "vendors-detail",
+        response = self.client.delete( reverse( "vendor-details",
             args = ( id, )))
         self.assertEqual( response.status_code, status.HTTP_200_OK)
-        response = self.client.delete( reverse( "vendors-detail",
+        response = self.client.delete( reverse( "vendor-details",
             args = ( id, )))
-        self.assertEqual( response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual( response.status_code, status.HTTP_404_NOT_FOUND)

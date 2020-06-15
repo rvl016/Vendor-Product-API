@@ -1,26 +1,36 @@
 from django.test import TestCase
+from decimal import Decimal
 from ..models import Product
 from apps.vendors.models import Vendor
 
-from djmoney.money import Money
-
 class ProductTestCase( TestCase) :
+
     def setUp( self) :
         self.correct_vendor = Vendor.objects.create( name = "Bradoo", 
         cnpj = "26.402.093/0001-74", city = "São Paulo")
         self.correct_vendor.save()
-        self.orange = Product( name = "Orange", code = 123454589012)
+        self.orange = Product( name = "Orange", code = '123454589012')
 
     def test_correct_product_with_no_price_is_valid( self) :
         self.apple = Product( vendor = self.correct_vendor, name = "Apple", 
-        code = 123456789012)
+        code = '123456789012')
         errors = self.apple.validate_record()
         self.assertEqual( errors, {})
         self.apple.save()
         
+    def test_negative_price_should_not_pass( self) :
+        self.apple = Product( vendor = self.correct_vendor, name = "apple", 
+            code = '123456789012', 
+            price = Decimal( -1.24).quantize( Decimal( '.01'))
+        )
+        errors = self.apple.validate_record()
+        self.assertEqual( set( errors.keys()), { 'price'})
+
     def test_correct_product_with_price_is_valid( self) :
-        self.apple = Product( vendor = self.correct_vendor, name = "Apple", 
-        code = 123456789012, price = Money( 1.24))
+        self.apple = Product( vendor = self.correct_vendor, name = "apple", 
+            code = '123456789012', 
+            price = Decimal( 1.24).quantize( Decimal( '.01'))
+        )
         errors = self.apple.validate_record()
         self.assertEqual( errors, {})
         self.apple.save()

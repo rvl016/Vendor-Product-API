@@ -18,6 +18,8 @@ class VendorsList( APIView, RequestValidator, Responses) :
     def get( self, request, format = None) :
         records = Vendor.get_all()
         serialized = VendorSerializer( records, many = True)
+        if len( serialized.data) == 0 :
+            return self._reply_no_content()
         return self._reply_get_ok( serialized.data)
 
     @csrf_exempt

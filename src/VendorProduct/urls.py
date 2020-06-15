@@ -19,10 +19,19 @@ from django.urls import path, include
 from django.urls import path
 
 from apps.vendors.views import VendorsList, VendorDetails
+from apps.products.views import AllProductsList,  VendorProductsList
+from apps.products.views import ProductDetails
 
 
 urlpatterns = [
     path( 'api/vendors/', VendorsList.as_view(), name = 'vendors'),
     path( 'api/vendors/<int:primary_key>/', VendorDetails.as_view(), 
-        name = 'vendors-detail'),
+        name = 'vendor-details'),
+
+    path( 'api/vendors/<int:vendor_id>/products', 
+        VendorProductsList.as_view(), name = 'vendor-products'),
+
+    path( 'api/products', AllProductsList.as_view(), name = 'all-products'),
+    path( 'api/products/<int:primary_key>/', 
+        ProductDetails.as_view(), name = 'product-details')
 ]
