@@ -52,12 +52,25 @@ class VendorProductsList( APIView, RequestValidator, Responses) :
     def post( self, request, vendor_id, format = None) :
         if not Vendor.id_exists( vendor_id) :
             return self._reply_not_found()
-        data = JSONParser().parse( request).get( 'product')
+        data = JSONParser().parse( request)
+        if data.get( 'product') :
+            return self.create_one( data, vendor_id)
+        return self.create_multiple( data, vendor_id)
+    
+    def create_one( self, data, vendor_id) :
+        data = data.get( 'product')
         if not self._is_data_valid_for( data, Product.fields) :
             return self._reply_bad_request()
         errors = Product.create( data, vendor_id)
         return self._reply_created_or_failed( errors)
         
+    def create_multiple( self, data, vendor_id) :
+        data = data.get( 'products')
+        if not self._is_data_an_array_with_fields( data, Product.fields) :
+            return self._reply_bad_request()
+        errors = Product.create_multiple( data, vendor_id)
+        return self._reply_created_or_failed( errors)
+
 
 class ProductDetails( APIView, RequestValidator, Responses) :
 
@@ -69,7 +82,7 @@ class ProductDetails( APIView, RequestValidator, Responses) :
     def get( self, request, primary_key, format = None) :
         if not Product.id_exists( primary_key) :
             return self._reply_not_found()
-        serialized = VendorProductSerializer( Product.get_id( primary_key))
+        serialized = VendorProductSerializer( Product.get_by_id( primary_key))
         return self._reply_get_ok( serialized.data)
     
     @csrf_exempt
@@ -88,5 +101,3 @@ class ProductDetails( APIView, RequestValidator, Responses) :
             return self._reply_not_found()
         Product.destroy( [primary_key])
         return self._reply_ok()
-        
-

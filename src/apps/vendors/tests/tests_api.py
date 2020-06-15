@@ -4,6 +4,7 @@ from rest_framework.test import APIRequestFactory
 from rest_framework.views import status
 
 from ..models import Vendor
+from apps.products.models import Product
 from ..serializers import VendorSerializer
 from ..views import VendorsList, VendorDetails
 
@@ -45,7 +46,55 @@ class VendorListAPITestCase( APITestCase) :
         }, format = 'json')
         self.assertEqual( response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
         self.assertNotEqual( response.json().get( 'errors'), None)     
+    
+    def test_joined_post_invalid( self) :
+        response = self.client.post( reverse( "vendors"), {
+            'vendor': {
+                'name': "Django Inc.",
+                'cnpj': "00.660.000/0000-10"
+            },
+            'products': [
+                {
+                    'name': "AK47",
+                    'code': "121202121212"
+                },
+                {
+                    'name': "AR15",
+                    'code': "13131312125512"
+                }
+            ]
+        }, format = 'json')
+        self.assertEqual( response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual( Vendor.objects.filter( 
+            cnpj = "00.660.000/0000-10").count(), 0)
+        self.assertEqual( Product.objects.filter( 
+            code = "121202121212").count(), 0)
         
+    def test_joined_post_valid( self) :
+        response = self.client.post( reverse( "vendors"), {
+            'vendor': {
+                'name': "Django Inc.",
+                'cnpj': "00.660.000/0000-10"
+            },
+            'products': [
+                {
+                    'name': "AK47",
+                    'code': "121202121212"
+                },
+                {
+                    'name': "AR15",
+                    'code': "131012125512"
+                }
+            ]
+        }, format = 'json')
+        self.assertEqual( response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual( Vendor.objects.filter( 
+            cnpj = "00.660.000/0000-10").count(), 1)
+        self.assertEqual( Product.objects.filter( 
+            code = "121202121212").count(), 1)
+        self.assertEqual( Product.objects.filter( 
+            code = "131012125512").count(), 1)
+
     def test_correct_post( self) :
         response = self.client.post( reverse( "vendors"), {
             'vendor': {

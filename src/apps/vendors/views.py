@@ -7,6 +7,7 @@ from helpers.request_validations import RequestValidator
 
 from .serializers import VendorSerializer
 from .models import Vendor
+from apps.products.models import Product
 
 class VendorsList( APIView, RequestValidator, Responses) :
 
@@ -24,12 +25,13 @@ class VendorsList( APIView, RequestValidator, Responses) :
 
     @csrf_exempt
     def post( self, request, format = None) :
-        data = JSONParser().parse( request).get( 'vendor')
-        if not self._is_data_valid_for( data, Vendor.fields) :
-            return self._reply_bad_request()
-        errors = Vendor.create( data)
-        return self._reply_created_or_failed( errors)
-    
+        data = JSONParser().parse( request)
+        vendor = data.get( 'vendor')
+        products = data.get( 'products')
+        if products == None :
+            return self.create_vendor( vendor)
+        return self.create_vendor_with_products( vendor, products)
+        
     @csrf_exempt
     def delete( self, request, format = None) :
         data = JSONParser().parse( request).get( 'vendors')
@@ -37,6 +39,19 @@ class VendorsList( APIView, RequestValidator, Responses) :
             return self._reply_bad_request()
         errors = Vendor.destroy( data)
         return self._reply_ok()
+
+    def create_vendor( self, vendor) :
+        if not self._is_data_valid_for( vendor, Vendor.fields) :
+            return self._reply_bad_request()
+        errors = Vendor.create( vendor)
+        return self._reply_created_or_failed( errors)
+
+    def create_vendor_with_products( self, vendor, products) :
+        if not (self._is_data_valid_for( vendor, Vendor.fields) 
+            and self._is_data_an_array_with_fields( products, Product.fields)) :
+            return self._reply_bad_request()
+        errors = Vendor.create_with_products( vendor, products)
+        return self._reply_created_or_failed( errors)
 
 
 class VendorDetails( APIView, RequestValidator, Responses) :

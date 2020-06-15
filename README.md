@@ -88,7 +88,35 @@ Send a <b>POST</b> on `/api/vendors`. Your request body must be like the followi
 }
 ```
 
+You can also include a list of products in this request for the new vendor:
+
+<br/>
+
+```js
+"vendor": {
+  "name": "'Vendor Name'",
+  "cnpj": "XX.XXX.XXX/XXXX-XX",   // Make sure CNPJ is in full standard format
+  "city": "'Vendor city'"
+},
+"products": [
+  {
+    "name": "'Product 1'",
+    "code": "'Product 1 UPC-A code'",
+    "price": "'Product 1 price'"
+  },
+  {
+    "name": "'Product 2'",
+    "code": "'Product 2 UPC-A code'",
+    "price": "'Product 2 price'"
+  }
+]
+```
+
 > If validation fails, you will receive a 406 status with 'errors' key in the body. Also, make sure the CNPJ does not exist in the database.
+
+<br/>
+
+> When including products in the request, the transaction is atomic: if anything fails in the validation, nothing will be commited.
 
 <br/>
 
@@ -242,10 +270,28 @@ Send a <b>POST</b> on `/api/vendors/<vendor_id>/products`. Your request body mus
 
 ```js
 "product": {
-   "name": "'Product 0 Name'",
-   "code": "XXXXXXXXXXXX",     // A string of numbers with UPC-A format.
-   "price": "'Product 0 Price'"
+  "name": "'Product 0 Name'",
+  "code": "XXXXXXXXXXXX",     // A string of numbers with UPC-A format.
+  "price": "'Product 0 Price'"
 }
+```
+
+You may also include multiple products in the request. Make sure you use 'products' instead of 'product' in this case:
+<br/>
+
+```js
+"products": [
+  {
+    "name": "'Product 0 Name'",
+    "code": "XXXXXXXXXXXX",     // A string of numbers with UPC-A format.
+    "price": "'Product 0 Price'"
+  },
+  {
+    "name": "'Product 1 Name'",
+    "code": "XXXXXXXXXXXX",     // A string of numbers with UPC-A format.
+    "price": "'Product 1 Price'"
+  }
+]
 ```
 
 > The product code must be unique for each vendor.
@@ -267,7 +313,7 @@ Send a <b>DELETE</b> on `/api/vendors/products`. Your request body must be like 
 ]
 ```
 
-> The validation on this request only requires that 'products' is an array of integers. If some id does not exist, it will be ignored and the existent ones will be deleted and the response status will be a 200 anyway.
+> The validation on this request only requires that 'products' is an array of integers. If some id does not exist, those will be ignored, and the existent ones will be deleted with a 200 response status anyway.
 
 > The ids on the array are same you see on the two get requests showed previously.
 

@@ -1,8 +1,9 @@
-from django.db import models
+from django.db import models, transaction, IntegrityError
 
 from django.core.validators import *
 from helpers.models_validations import BasicValidator
 
+from apps.products import models as prod
 from .validators import *
  
 # Create your models here.
@@ -57,6 +58,29 @@ class Vendor( models.Model, BasicValidator) :
         vendor = cls( **data_dict)
         return vendor.__show_errors_or_save()
 
+    @classmethod
+    def create_with_products( cls, vendor_data, products_data) :
+        try :
+            with transaction.atomic() :
+                errors = cls.transact_create_with_products( vendor_data, 
+                    products_data)
+        except IntegrityError as error :
+            return error.args[0]
+        return errors
+
+    @classmethod
+    def transact_create_with_products( cls, vendor_data, products_data) :
+        errors = { 'vendor' : {}, 'products' : [] }
+        vendor = cls( **vendor_data)
+        errors['vendor'] = vendor.__show_errors_or_save()
+        if errors['vendor'] != {} :
+            raise IntegrityError( errors) 
+        errors['products'] = prod.Product.create_multiple_with_vendor_instance(
+            products_data, vendor)
+        if any( [error != {} for error in errors['products']]) :
+            raise IntegrityError( errors)
+        return {}
+        
     @classmethod
     def find_and_try_to_update_with( cls, id, data) :
         vendor = cls.get( id)

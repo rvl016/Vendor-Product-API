@@ -1,5 +1,5 @@
 from decimal import Decimal
-from django.db import models
+from django.db import models, transaction, IntegrityError
 
 from apps.vendors.models import Vendor
 
@@ -64,11 +64,11 @@ class Product( models.Model, BasicValidator) :
         return cls.objects.filter( vendor__id = vendor_id).select_related()
 
     @classmethod
-    def get_id( cls, id) :
+    def get_by_id( cls, id) :
         return cls.objects.get( id = id)
 
     @classmethod
-    def get_code( cls, code) :
+    def get_by_code( cls, code) :
         return cls.objects.filter( code = code).select_related()
 
     @classmethod
@@ -78,13 +78,43 @@ class Product( models.Model, BasicValidator) :
     @classmethod 
     def create( cls, data_dict, vendor_id) :
         vendor = Vendor.get( vendor_id)
+        return cls.create_with_instance( data_dict, vendor)
+
+    @classmethod 
+    def create_multiple( cls, data_array, vendor_id) :
+        vendor = Vendor.get( vendor_id)
+        try :
+            with transaction.atomic() :
+                errors = cls.transact_create_multiple( data_array, vendor)
+        except IntegrityError as error :
+            return error.args[0]
+        return errors
+
+    @classmethod
+    def transact_create_multiple( cls, data_array, vendor) :
+        errors = { 'products': [] }
+        errors['products'] = cls.create_multiple_with_vendor_instance( 
+            data_array, vendor)
+        if any( [error != {} for error in errors['products']]) :
+            raise IntegrityError( errors)
+        return {}
+        
+    # should be in an atomic transaction
+    @classmethod
+    def create_multiple_with_vendor_instance( cls, data_array, vendor) :
+        errors = list( map( lambda product: 
+            Product.create_with_instance( product, vendor), data_array))
+        return errors
+        
+    @classmethod
+    def create_with_instance( cls, data_dict, vendor) :
         data_dict['price'] = Product.decimize_it( data_dict.get( 'price'))
         product = cls( **data_dict, vendor = vendor)
         return product.__show_errors_or_save()
-
+        
     @classmethod
     def find_and_try_to_update_with( cls, id, data) :
-        product = cls.get_id( id)
+        product = cls.get_by_id( id)
         return product.update_record_with( data)
 
     def update_record_with( self, data) :

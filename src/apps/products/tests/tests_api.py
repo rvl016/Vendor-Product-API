@@ -104,7 +104,44 @@ class VendorProductsListAPITestCase( APITestCase, GenData) :
         }, format = 'json')
         self.assertEqual( response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_asserts_atomicity_of_post_with_multiple_products( self) :
+        response = self.client.post( reverse( "vendor-products", 
+            args = ( self.vendor1.id, )), {
+            'products': [
+                {
+                    'name': "Product name",
+                    'code': '575757575750'
+                },
+                {
+                    'name': "Product2 name",
+                    'code': '575757575755'
+                },
+            ] 
+        }, format = 'json')
+        self.assertEqual( response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual( Product.get_all_from_vendor( 
+            self.vendor1.id).count(), 4)
+        
 
+    def test_post_multiple_products_for_vendor( self) :
+        response = self.client.post( reverse( "vendor-products", 
+            args = ( self.vendor1.id, )), {
+            'products': [
+                {
+                    'name': "Product name",
+                    'code': '575757575750'
+                },
+                {
+                    'name': "Product2 name",
+                    'code': '575057575755'
+                },
+            ] 
+        }, format = 'json')
+        self.assertEqual( response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual( Product.get_all_from_vendor( 
+            self.vendor1.id).count(), 6)
+
+        
     def test_post_should_add_products_for_vendor( self) :
         response = self.client.post( reverse( "vendor-products", 
             args = ( self.vendor1.id, )), {
