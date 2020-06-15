@@ -47,6 +47,7 @@ This is done on `/api/vendors` endpoint:</br>
 
 <h4>Viewing all vendors:</h4>
 <br/>
+
 Send a <b>GET</b> on `/api/vendors`. Your response will contain the following:
 
 <br/><br/>
@@ -74,6 +75,7 @@ Send a <b>GET</b> on `/api/vendors`. Your response will contain the following:
 
 <h4>Registering a new vendor:</h4>
 <br/>
+
 Send a <b>POST</b> on `/api/vendors`. Your request body must be like the following:
 
 <br/><br/>
@@ -92,6 +94,7 @@ Send a <b>POST</b> on `/api/vendors`. Your request body must be like the followi
 
 <h4>Deleting vendors:</h4>
 <br/>
+
 Send a <b>DELETE</b> on `/api/vendors`. Your request body must be like the following:
 
 <br/><br/>
@@ -114,6 +117,7 @@ This is done on `/api/vendors/<vendor_id>` endpoint:</br>
 
 <h4>Viewing a vendor:</h4>
 <br/>
+
 Send a <b>GET</b> on `/api/vendors`. Your response will contain the following:
 
 <br/><br/>
@@ -131,6 +135,7 @@ Send a <b>GET</b> on `/api/vendors`. Your response will contain the following:
 
 <h4>Modifying a vendor data:</h4>
 <br/>
+
 Send a <b>PUT</b> on `/api/vendors/<vendor_id>`. Your request body must contain the following:
 
 <br/><br/>
@@ -149,8 +154,10 @@ Send a <b>PUT</b> on `/api/vendors/<vendor_id>`. Your request body must contain 
 
 <h4>Deleting a vendor:</h4>
 <br/>
+
 Send a <b>DELETE</b> on `/api/vendors/<vendor_id>`.
-<br/>
+
+<br/><br/>
 
 > If the requested 'vendor_id' does no exist, your response will be a 404.
 
@@ -162,6 +169,7 @@ Send a <b>DELETE</b> on `/api/vendors/<vendor_id>`.
 
 <h4>Viewing all products of any vendor:</h4>
 <br/>
+
 Send a <b>GET</b> on `/api/products`. Your response will contain the following:
 
 <br/><br/>
@@ -200,6 +208,7 @@ Send a <b>GET</b> on `/api/products`. Your response will contain the following:
 
 <h4>Viewing all products of a specific vendor:</h4>
 <br/>
+
 Send a <b>GET</b> on `/api/vendors/<vendor_id>/products`. Your response will contain the following:
 
 <br/><br/>
@@ -226,6 +235,7 @@ Send a <b>GET</b> on `/api/vendors/<vendor_id>/products`. Your response will con
 
 <h4>Creating a new product for a specific vendor:</h4>
 <br/>
+
 Send a <b>POST</b> on `/api/vendors/<vendor_id>/products`. Your request body must be like the following:
 
 <br/><br/>
@@ -244,6 +254,7 @@ Send a <b>POST</b> on `/api/vendors/<vendor_id>/products`. Your request body mus
 
 <h4>Deleting products:</h4>
 <br/>
+
 Send a <b>DELETE</b> on `/api/vendors/products`. Your request body must be like the following:
 
 <br/><br/>
@@ -266,7 +277,10 @@ Send a <b>DELETE</b> on `/api/vendors/products`. Your request body must be like 
 
 <h4>Viewing a specific product:</h4>
 <br/>
+
 Send a <b>GET</b> on `/api/products/<product_id>`. Your response body will be like the following:
+
+<br/><br/>
 
 ```js
 "data": {
@@ -283,7 +297,10 @@ Send a <b>GET</b> on `/api/products/<product_id>`. Your response body will be li
 
 <h4>Modifying a specific product:</h4>
 <br/>
+
 Send a <b>PUT</b> on `/api/products/<product_id>`. Your request body should be like the following:
+
+<br/><br/>
 
 ```js
 "product": {
@@ -299,7 +316,9 @@ Send a <b>PUT</b> on `/api/products/<product_id>`. Your request body should be l
 
 <h4>Deleting a specific product:</h4>
 <br/>
+
 Send a <b>DELETE</b> on `/api/products/<product_id>`.
-<br/>
+
+<br/><br/>
 
 > If the requested 'vendor_id' does no exist, your response will be a 404.
