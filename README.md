@@ -1,5 +1,13 @@
 <h1> Vendor-Product - JSON API </h1>
 
+---
+
+<h2>Running the project</h2>
+<br/>
+
+Type `./manage.py runserver` at `/src/` to run.<br/>
+Type `./manage.py test` at `/src/` to test.
+
 ___
 
 <h2>All API Endpoints</h2>
